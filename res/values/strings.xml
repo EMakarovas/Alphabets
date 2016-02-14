@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Alphabets</string>
+    <string name="intro_first">Welcome! Tap anywhere to begin.</string>
+    <string name="intro_second">You will have to blah, then choose letters and do more blah.</string>
+    <string name="intro_third">Finally, much blah will be had.</string>
+    <string name="quit_title">Quit Alphabet Ladder</string>
+    <string name="quit_msg">Those words won\'t get transliterated by themselves. Are you sure you want to quit Alphabet Ladder?</string>
+
+</resources>

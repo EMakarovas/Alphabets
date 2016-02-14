@@ -1,0 +1,22 @@
+{
+	"message": "test message",
+	"message": "another test",
+	"words": [
+		{"org": "Ж.а.л.к.о.", "new": "zh.a.l.k.o."},
+		{"org": "Щ.у.к.а.", "new": "shch.u.k.a."},
+		{"org": "д.о.м.", "new": "d.o.m."},
+		{"org": "к.о.д.", "new": "k.o.d."},
+		{"org": "К.а.н.а.л.", "new": "K.a.n.a.l."},
+		{"org": "Л.о.д.к.а.", "new": "L.o.d.k.a."},
+		{"org": "к.л.а.с.с.", "new": "k.l.a.s.s."},
+		{"org": "С.о.к.", "new": "s.o.k."},
+		{"org": "с.а.д.", "new": "s.a.d."},
+		{"org": "с.л.о.н.", "new": "s.l.o.n."},
+		{"org": "р.а.д.", "new": "r.a.d."},
+		{"org": "Б.а.н.к.", "new": "B.a.n.k."}
+	],
+	"message": "now letter B",
+	"words": [
+		{"org": "T.e.c.t.", "new": "T.e.s.t."}
+	]
+}
