@@ -1,2 +1,2 @@
 # Alphabets
-test
+Android application designed to learn non-Latin alphabets.
