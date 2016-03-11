@@ -9,10 +9,10 @@ import com.alphabets.game.Data;
 import com.alphabets.game.DataReader;
 import com.alphabets.game.NewWord;
 import com.alphabets.game.OrgWord;
-import com.alphabets.visible.FocusedMessage;
-import com.alphabets.visible.FocusedWordBlock;
-import com.alphabets.visible.UnfocusedMessage;
-import com.alphabets.visible.UnfocusedWordBlock;
+import com.alphabets.widgets.FocusedMessage;
+import com.alphabets.widgets.FocusedWordBlock;
+import com.alphabets.widgets.UnfocusedMessage;
+import com.alphabets.widgets.UnfocusedWordBlock;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

@@ -34,7 +34,7 @@ public class StartActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		Data.initialiseData(this);
 		
-		if(false) {
+		if(true) {
 			
 			this.goToMainActivity();
 			

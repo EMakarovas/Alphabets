@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/FocusedBlock"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:clipChildren="false"
+    android:clipToPadding="false" >
     
     <com.alphabets.view.CustomTextView
         android:id="@+id/translation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:gravity="center" />
+        android:gravity="center" />  
     
-    <com.alphabets.view.CustomTextView
-        android:id="@+id/main_word"
-        android:layout_width="match_parent"
+    <FrameLayout 
         android:layout_height="wrap_content"
-        android:textSize="25sp"
-        android:gravity="center" />
-    
-    <EditText
-        android:id="@+id/write"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:inputType="text"
-        android:background="@drawable/editor_style" />  
+        android:layout_width="wrap_content"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:layout_marginTop="50dp" >
+      
+	    <EditText
+	        android:id="@+id/write"
+	        android:layout_width="200dp"
+	        android:layout_height="50dp"
+	        android:layout_gravity="center"
+	        android:gravity="center"
+	        android:inputType="text"
+	        android:background="@drawable/editor_style" />  
+	        
+	    <com.alphabets.view.CustomTextView
+	        android:id="@+id/main_word"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:textSize="25sp"
+	        android:layout_gravity="center" />
+        
+    </FrameLayout>
 
 </LinearLayout>
