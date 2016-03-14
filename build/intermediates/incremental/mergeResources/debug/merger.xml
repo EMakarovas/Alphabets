@@ -15109,33 +15109,8 @@ false
                 qualifiers="xxhdpi-v4"
                 type="drawable" />
             <file
-                name="activity_main"
-                path="D:\Java\Workspace\Alphabets\res\layout\activity_main.xml"
-                qualifiers=""
-                type="layout" />
-            <file
-                name="focused_message"
-                path="D:\Java\Workspace\Alphabets\res\layout\focused_message.xml"
-                qualifiers=""
-                type="layout" />
-            <file
-                name="focused_word"
-                path="D:\Java\Workspace\Alphabets\res\layout\focused_word.xml"
-                qualifiers=""
-                type="layout" />
-            <file
                 name="start_activity"
                 path="D:\Java\Workspace\Alphabets\res\layout\start_activity.xml"
-                qualifiers=""
-                type="layout" />
-            <file
-                name="unfocused_message"
-                path="D:\Java\Workspace\Alphabets\res\layout\unfocused_message.xml"
-                qualifiers=""
-                type="layout" />
-            <file
-                name="unfocused_word"
-                path="D:\Java\Workspace\Alphabets\res\layout\unfocused_word.xml"
                 qualifiers=""
                 type="layout" />
             <file
@@ -15222,6 +15197,26 @@ center
                     <!-- API 14 theme customizations can go here. -->
                 </style>
             </file>
+            <file
+                name="word"
+                path="D:\Java\Workspace\Alphabets\res\layout\word.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="message"
+                path="D:\Java\Workspace\Alphabets\res\layout\message.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="main_activity"
+                path="D:\Java\Workspace\Alphabets\res\layout\main_activity.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="load_activity"
+                path="D:\Java\Workspace\Alphabets\res\layout\load_activity.xml"
+                qualifiers=""
+                type="layout" />
         </source>
         <source path="D:\Java\Workspace\Alphabets\build\generated\res\rs\debug" />
         <source path="D:\Java\Workspace\Alphabets\build\generated\res\generated\debug" />

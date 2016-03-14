@@ -10,9 +10,6 @@
                 name="data.json"
                 path="D:\Java\Workspace\Alphabets\assets\data.json" />
             <file
-                name="level1.json"
-                path="D:\Java\Workspace\Alphabets\assets\level1.json" />
-            <file
                 name="OpenSans-Regular.ttf"
                 path="D:\Java\Workspace\Alphabets\assets\OpenSans-Regular.ttf" />
         </source>

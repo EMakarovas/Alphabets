@@ -1,6 +1,8 @@
 package com.alphabets;
 
-import com.alphabets.game.Data;
+import com.alphabets.data.Loader;
+import com.alphabets.functional.QuitDialog;
+import com.alphabets.progress.Data;
 import com.alphabets.view.CustomTextView;
 
 import android.annotation.SuppressLint;
@@ -24,7 +26,6 @@ public class StartActivity extends Activity {
 	
 	private CustomTextView tv;
 	private RelativeLayout main;
-	private StartActivity act;
 	private int currentMsg = 0;
 	
 	@SuppressWarnings("unused")
@@ -33,14 +34,15 @@ public class StartActivity extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		Data.initialiseData(this);
+		Loader.setShowingStartActivity(true);
+		Loader.startLoading(this);
 		
 		if(true) {
 			
-			this.goToMainActivity();
+			this.carryOn();
 			
 		} else {
 			
-			act = this;
 			setContentView(R.layout.start_activity);
 			main = (RelativeLayout) findViewById(R.id.start_main);
 			tv = (CustomTextView) findViewById(R.id.start_center);
@@ -74,9 +76,9 @@ public class StartActivity extends Activity {
 				tv.setText(R.string.intro_third);
 				break;
 			case FINISH:
-				this.goToMainActivity();
+				this.carryOn();
 				break;
-			default: this.goToMainActivity();
+			default: this.carryOn();
 		
 		}
 		
@@ -94,10 +96,23 @@ public class StartActivity extends Activity {
 		
 	}
 	
-	private void goToMainActivity() {
+	private void carryOn() {
 		
-		Intent intent = new Intent(this, MainActivity.class);
-		startActivity(intent);
+		// data is ready, no need to show load screen
+		if(Loader.isReady()) {
+			
+			Intent intent = new Intent(this, MainActivity.class);
+			startActivity(intent);
+			
+		} 
+		// data not loaded yet, show LoadActivity
+		else {
+			
+			Loader.setShowingStartActivity(false);
+			Intent intent = new Intent(this, LoadActivity.class);
+			startActivity(intent);
+			
+		}
 		
 	}
 	
@@ -117,7 +132,7 @@ public class StartActivity extends Activity {
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			act.fadeOut();
+			StartActivity.this.fadeOut();
 			return v.onTouchEvent(event);
 		}
 		
@@ -127,7 +142,7 @@ public class StartActivity extends Activity {
 
 		@Override
 		public void onAnimationEnd(Animation animation) {
-			act.fadeIn(act.currentMsg);
+			StartActivity.this.fadeIn(StartActivity.this.currentMsg);
 		}
 
 		@Override
