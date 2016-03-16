@@ -5,9 +5,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.alphabets.MainActivity;
 import com.alphabets.R;
+import com.alphabets.functional.Keyboard;
+import com.alphabets.progress.ProgressData;
 import com.alphabets.view.CustomTextView;
-import com.alphabets.widgets.raw.NewWord;
-import com.alphabets.widgets.raw.OrgWord;
+import com.alphabets.widgets.raw.WordGroup;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -21,54 +22,42 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 @SuppressLint("ClickableViewAccessibility")
-public class WordBlock extends LinearLayout {
+public class WordBlock extends WordGroup {
 	
 	// visual elements
 	private EditText writer;
 	private CustomTextView mainWord;
 	private CustomTextView translationView;
+	private BlockCompletedListener listener;
 	
-	// raw data
-	private OrgWord orgWord;
-	private NewWord newWord;
-	
-	// properties
-	private boolean locked;
-	
-	public WordBlock(Context context, String orgWord, String newWord, String translation, boolean locked) {
+	public WordBlock(Context context, int position, String orgWord, String newWord, String translation) {
 		
-		super(context);
-		View.inflate(context, R.layout.word, this);
+		super(context, position, orgWord, newWord, translation);
+		View.inflate(context, R.layout.word_block, this);
 		
-		this.locked = locked;
-		
-		this.orgWord = new OrgWord(orgWord);
-		this.newWord = new NewWord(newWord);
-		
+		listener = (MainActivity) context;
+				
 		mainWord = (CustomTextView) this.findViewById(R.id.main_word);
-		mainWord.setText(this.orgWord.getWord());
+		mainWord.setText(getOrgWord().getWord());
 		
 		translationView = (CustomTextView) this.findViewById(R.id.translation);
-		translationView.setText(translation);
+		translationView.setText(getTranslation());
 		
 		writer = (EditText) this.findViewById(R.id.write);
 		writer.addTextChangedListener(watcher);		
 		
 		this.setOnTouchListener(doubleClickListener);
 		
-	}
-	
-	/*
-	 * 
-	 * Retrieve EditText object.
-	 * 
-	 */
-	
-	public EditText getWriter() {
-		return writer;
+		if(!isUnlocked())
+			writer.setFocusable(false);
+		
+		if(isCompleted()) {
+			insertWriterText(new ProgressData(this.getContext()).getCompletionData(getPosition()));
+			performAnimation(0, 0);
+		}
+		
 	}
 	
 	/*
@@ -77,13 +66,17 @@ public class WordBlock extends LinearLayout {
 	 * 
 	 */
 	
-	public void setMainWord(Spanned word) {
+	private void setMainWord(Spanned word) {
 		mainWord.setText(word);
 	}
 	
-	public void setWriterText(Spanned word) {
+	private void setWriterText(Spanned word) {
 		writer.setText(word);
 		writer.setSelection(word.length());
+	}
+	
+	private void insertWriterText(String word) {
+		writer.setText(word);
 	}
 	
 	/*
@@ -95,9 +88,7 @@ public class WordBlock extends LinearLayout {
 	private TextWatcher watcher = new TextWatcher() {
 
 		@Override
-		public void afterTextChanged(Editable arg0) {
-						
-		}
+		public void afterTextChanged(Editable arg0) {}
 
 		@Override
 		public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -115,23 +106,34 @@ public class WordBlock extends LinearLayout {
 		
 		if(oldLetterCount!=newLetterCount) {
 
-			newWord.compareInputToWord(newTotalText);
-			List<Boolean[]> newWordCompletionData = newWord.getData();
-			orgWord.updateData(newWordCompletionData);
+			getNewWord().compareInputToWord(newTotalText);
+			List<Boolean[]> newWordCompletionData = getNewWord().getData();
+			getOrgWord().updateData(newWordCompletionData);
 			
 			updateCurrentBlock();
 			
-			if(newWord.isCompleted())
-				((MainActivity) this.getContext()).finishBlock();							
+			if(getNewWord().isCompleted() && getIsCurrent())
+				completeBlock();
 		
 		}
 		
 	}
 	
+	@Override
+	public void completeBlock() {
+		
+		Keyboard.hide();
+		new ProgressData(this.getContext()).setCompletionData(getPosition(), getNewWord().getUserInput().toString());
+		setCompleted(true);
+		setIsCurrent(false);
+		listener.onBlockCompleted();		
+		
+	}
+	
 	private void updateCurrentBlock() {
 		
-		setMainWord(orgWord.getWord());
-		setWriterText(newWord.getUserInput());
+		setMainWord(getOrgWord().getWord());
+		setWriterText(getNewWord().getUserInput());
 		
 	}
 	
@@ -142,51 +144,71 @@ public class WordBlock extends LinearLayout {
 	 * 
 	 */
 		
+	@Override
 	public void setActive() {
 		
+		setIsCurrent(true);
+		setUnlocked(true);
+		
+		writer.setFocusableInTouchMode(true);
 		writer.requestFocus();
+		Keyboard.show();
+		performAnimation(1000, 500);		
 		
-		final TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-				Animation.RELATIVE_TO_SELF, 0.0f,
-				Animation.RELATIVE_TO_PARENT, 0.0f,
-				Animation.RELATIVE_TO_PARENT, -1.0f);
-		animation.setDuration(1000);
-		animation.setAnimationListener(new AnimationListener() {
-
-			@Override
-			public void onAnimationEnd(Animation animation) {
-				
-				// for some reason calling setTranslationY()
-				// straightaway messes up the animation
-				// added 1 sec delay to fix this issue
-				final Handler handler = new Handler();
-				handler.postDelayed(new Runnable() {
-					public void run() {
-						mainWord.setTranslationY(-writer.getHeight());
-
-					}
-				}, 1);
-				
-			}
-
-			@Override
-			public void onAnimationRepeat(Animation animation) {				
-			}
-
-			@Override
-			public void onAnimationStart(Animation animation) {}
+	}
 	
-		});
+	private void performAnimation(final int duration, final int offset) {
 		
-		final Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
+		((MainActivity) this.getContext()).runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				mainWord.startAnimation(animation);
+				
+				final TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
+						Animation.RELATIVE_TO_SELF, 0.0f,
+						Animation.RELATIVE_TO_PARENT, 0.0f,
+						Animation.RELATIVE_TO_PARENT, -1.0f);
+				animation.setDuration(duration);
+				animation.setAnimationListener(new AnimationListener() {
+
+					@Override
+					public void onAnimationEnd(Animation animation) {
+						
+						// for some reason calling setTranslationY()
+						// straightaway messes up the animation
+						// added 1 sec delay to fix this issue
+						final Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+							public void run() {
+								mainWord.setTranslationY(-writer.getHeight());
+
+							}
+						}, 1);
+						
+					}
+
+					@Override
+					public void onAnimationRepeat(Animation animation) {				
+					}
+
+					@Override
+					public void onAnimationStart(Animation animation) {}
+			
+				});
+				
+				final Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						mainWord.startAnimation(animation);
+					}
+					
+				}, offset);
+				
 			}
 			
-		}, 500);
+		});
 		
 	}
 	
@@ -202,7 +224,7 @@ public class WordBlock extends LinearLayout {
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			
+						
 			int action = event.getAction();
 			
 			if(action==MotionEvent.ACTION_DOWN) {
@@ -215,7 +237,8 @@ public class WordBlock extends LinearLayout {
 				if(currentClickTime - lastClickTime<250) {
 					
 					// handle double click action
-					handleDoubleClick();
+					if(isUnlocked())
+						handleDoubleClick();
 
 					// reset millis counter
 					lastClickTime = 0;
@@ -262,23 +285,9 @@ public class WordBlock extends LinearLayout {
 	
 	private void handleDoubleClick() {
 		
-		String newInput = newWord.getWithNextBlock();
+		String newInput = getNewWord().getWithNextBlock();
 		writer.setText(newInput);
 		
-	}
-	
-	/*
-	 * 
-	 * Deals with the locked property.
-	 * 
-	 */
-	
-	public void setLocked(boolean locked) {
-		this.locked = locked;
-	}
-	
-	public boolean isLocked() {
-		return locked;
 	}
 
 }

@@ -2179,7 +2179,7 @@ containing a value of this type.
         public static final int select_dialog_singlechoice_material=0x7f030026;
         public static final int start_activity=0x7f030027;
         public static final int support_simple_spinner_dropdown_item=0x7f030028;
-        public static final int word=0x7f030029;
+        public static final int word_block=0x7f030029;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -2248,6 +2248,8 @@ containing a value of this type.
          */
         public static final int abc_toolbar_collapse_description=0x7f0a0004;
         public static final int app_name=0x7f0a0014;
+        public static final int error_msg=0x7f0a001b;
+        public static final int error_title=0x7f0a001a;
         public static final int intro_first=0x7f0a0015;
         public static final int intro_second=0x7f0a0016;
         public static final int intro_third=0x7f0a0017;
@@ -2467,7 +2469,7 @@ containing a value of this type.
     
          */
         public static final int Base_Widget_AppCompat_Toolbar_Button_Navigation=0x7f0b00ae;
-        public static final int FocusedBlock=0x7f0b0136;
+        public static final int FocusedBlock=0x7f0b0135;
         public static final int Platform_AppCompat=0x7f0b0109;
         public static final int Platform_AppCompat_Light=0x7f0b010a;
         /**  Overlay themes 
@@ -2610,7 +2612,6 @@ containing a value of this type.
          the value of colorAccent, colorPrimary and its variants. 
          */
         public static final int ThemeOverlay_AppCompat_Light=0x7f0b0105;
-        public static final int UnfocusedBlock=0x7f0b0135;
         /**  Styles in here can be extended for customisation in your application. Each utilises
          one of the.styles. If Holo themes are available on the current platform version
          they will be used instead of the compat styles. 

@@ -3,7 +3,8 @@
     style="@style/FocusedBlock"
     android:orientation="vertical"
     android:clipChildren="false"
-    android:clipToPadding="false" >
+    android:clipToPadding="false"
+    android:background="@drawable/border" >
     
     <com.alphabets.view.CustomTextView
         android:id="@+id/translation"

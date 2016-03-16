@@ -1,8 +1,6 @@
 package com.alphabets;
 
-import com.alphabets.data.Loader;
 import com.alphabets.functional.QuitDialog;
-import com.alphabets.progress.Data;
 import com.alphabets.view.CustomTextView;
 
 import android.annotation.SuppressLint;
@@ -33,13 +31,10 @@ public class StartActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
-		Data.initialiseData(this);
-		Loader.setShowingStartActivity(true);
-		Loader.startLoading(this);
 		
 		if(true) {
 			
-			this.carryOn();
+			this.goToMainActivity();
 			
 		} else {
 			
@@ -76,9 +71,9 @@ public class StartActivity extends Activity {
 				tv.setText(R.string.intro_third);
 				break;
 			case FINISH:
-				this.carryOn();
+				this.goToMainActivity();
 				break;
-			default: this.carryOn();
+			default: this.goToMainActivity();
 		
 		}
 		
@@ -96,23 +91,10 @@ public class StartActivity extends Activity {
 		
 	}
 	
-	private void carryOn() {
+	private void goToMainActivity() {
 		
-		// data is ready, no need to show load screen
-		if(Loader.isReady()) {
-			
-			Intent intent = new Intent(this, MainActivity.class);
-			startActivity(intent);
-			
-		} 
-		// data not loaded yet, show LoadActivity
-		else {
-			
-			Loader.setShowingStartActivity(false);
-			Intent intent = new Intent(this, LoadActivity.class);
-			startActivity(intent);
-			
-		}
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
 		
 	}
 	
@@ -178,7 +160,7 @@ public class StartActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 		
-		QuitDialog.showQuitDialog(this);
+		QuitDialog.show(this);
 		
 	}
 

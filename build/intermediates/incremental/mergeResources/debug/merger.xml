@@ -15126,9 +15126,11 @@ false
                 qualifiers="" >
                 <string name="quit_title" >Quit Alphabet Ladder
                 </string>
+                <string name="error_title" >Error
+                </string>
                 <string name="intro_first" >Welcome! Tap anywhere to begin.
                 </string>
-                <string name="app_name" >Alphabets
+                <string name="app_name" >Alphabet Ladder
                 </string>
                 <string name="intro_second" >You will have to blah, then choose letters and do more blah.
                 </string>
@@ -15136,22 +15138,12 @@ false
                 </string>
                 <string name="quit_msg" >Those words won\'t get transliterated by themselves. Are you sure you want to quit Alphabet Ladder?
                 </string>
+                <string name="error_msg" >An internal error has occurred. Unfortunately, you need to restart Alphabet Ladder.
+                </string>
             </file>
             <file
                 path="D:\Java\Workspace\Alphabets\res\values\styles.xml"
                 qualifiers="" >
-
-                <style name="UnfocusedBlock" >
-                    <item name="android:layout_width">
-match_parent
-                    </item>
-                    <item name="android:layout_height">
-150dp
-                    </item>
-                    <item name="android:gravity">
-center
-                    </item>
-                </style>
 
                 <style
                     name="AppTheme"
@@ -15163,7 +15155,7 @@ center
 match_parent
                     </item>
                     <item name="android:layout_height">
-250dp
+200dp
                     </item>
                     <item name="android:gravity">
 center
@@ -15198,11 +15190,6 @@ center
                 </style>
             </file>
             <file
-                name="word"
-                path="D:\Java\Workspace\Alphabets\res\layout\word.xml"
-                qualifiers=""
-                type="layout" />
-            <file
                 name="message"
                 path="D:\Java\Workspace\Alphabets\res\layout\message.xml"
                 qualifiers=""
@@ -15215,6 +15202,11 @@ center
             <file
                 name="load_activity"
                 path="D:\Java\Workspace\Alphabets\res\layout\load_activity.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="word_block"
+                path="D:\Java\Workspace\Alphabets\res\layout\word_block.xml"
                 qualifiers=""
                 type="layout" />
         </source>

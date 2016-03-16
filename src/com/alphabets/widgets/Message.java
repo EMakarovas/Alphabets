@@ -3,22 +3,25 @@ package com.alphabets.widgets;
 import com.alphabets.MainActivity;
 import com.alphabets.R;
 import com.alphabets.view.CustomTextView;
+import com.alphabets.widgets.raw.VisualBlock;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
 
-public class Message extends LinearLayout {
+public class Message extends VisualBlock {
 
 	private CustomTextView tv;
+	private BlockCompletedListener listener;
 	
 	@SuppressLint("ClickableViewAccessibility")
-	public Message(Context context, String message) {
+	public Message(Context context, int position, String message) {
 		
-		super(context);
+		super(context, position);
 		View.inflate(context, R.layout.message, this);
+		
+		listener = (MainActivity) context;
 				
 		tv = (CustomTextView) this.findViewById(R.id.message);
 		tv.setText(message);
@@ -30,13 +33,13 @@ public class Message extends LinearLayout {
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			
+						
 			v.performClick();
 			
 			int action = event.getAction();
-			
-			if(action==MotionEvent.ACTION_DOWN)
-				((MainActivity) v.getContext()).finishBlock();
+						
+			if(action==MotionEvent.ACTION_DOWN && getIsCurrent())
+				completeBlock();
 			
 			return false;
 			
@@ -44,4 +47,21 @@ public class Message extends LinearLayout {
 
 	};
 	
+	@Override
+	public void setActive() {
+		
+		setUnlocked(true);
+		setIsCurrent(true);
+		
+	}
+	
+	@Override
+	public void completeBlock() {
+		
+		setCompleted(true);
+		setIsCurrent(false);
+		listener.onBlockCompleted();
+		
+	}
+		
 }

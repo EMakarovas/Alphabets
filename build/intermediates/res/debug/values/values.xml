@@ -1247,7 +1247,9 @@
     <!-- From: file:/D:/Java/Workspace/Alphabets/res/values/strings.xml -->
     <eat-comment />
 
-    <string name="app_name">Alphabets</string>
+    <string name="app_name">Alphabet Ladder</string>
+    <string name="error_msg">An internal error has occurred. Unfortunately, you need to restart Alphabet Ladder.</string>
+    <string name="error_title">Error</string>
     <string name="intro_first">Welcome! Tap anywhere to begin.</string>
     <string name="intro_second">You will have to blah, then choose letters and do more blah.</string>
     <string name="intro_third">Finally, much blah will be had.</string>
@@ -2292,7 +2294,7 @@
 
     <style name="FocusedBlock">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">250dp</item>
+        <item name="android:layout_height">200dp</item>
         <item name="android:gravity">center</item>
     </style>
     <!-- From: file:/D:/Java/Workspace/Alphabets/build/intermediates/exploded-aar/Workspace/appcompat_v7/unspecified/res/values/values.xml -->
@@ -2607,16 +2609,6 @@
     <style name="ThemeOverlay.AppCompat.Dark.ActionBar" parent="Base.ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="ThemeOverlay.AppCompat.Light" parent="Base.ThemeOverlay.AppCompat.Light" />
-    <!-- From: file:/D:/Java/Workspace/Alphabets/res/values/styles.xml -->
-    <eat-comment />
-
-    <style name="UnfocusedBlock">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">150dp</item>
-        <item name="android:gravity">center</item>
-    </style>
-    <!-- From: file:/D:/Java/Workspace/Alphabets/build/intermediates/exploded-aar/Workspace/appcompat_v7/unspecified/res/values/values.xml -->
-    <eat-comment />
 
     <style name="Widget.AppCompat.ActionBar" parent="Base.Widget.AppCompat.ActionBar" />
 

@@ -6,21 +6,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
-public class QuitDialog {
+public class ErrorDialog {
 	
 	public static void show(Context context) {
 		
 		new AlertDialog.Builder(context)
-	    .setTitle(R.string.quit_title)
-	    .setMessage(R.string.quit_msg)
-	    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+	    .setTitle(R.string.error_title)
+	    .setMessage(R.string.error_msg)
+	    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 	        public void onClick(DialogInterface dialog, int which) { 
 	            System.exit(0);
-	        }
-	     })
-	    .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-	        public void onClick(DialogInterface dialog, int which) { 
-	            // do nothing
 	        }
 	     })
 	    .setIcon(android.R.drawable.ic_dialog_alert)

@@ -1,14 +1,15 @@
 package com.alphabets;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.alphabets.data.Loader;
+import com.alphabets.data.DataLoader;
+import com.alphabets.data.DataReadyListener;
 import com.alphabets.functional.Keyboard;
 import com.alphabets.functional.QuitDialog;
-import com.alphabets.progress.Data;
-import com.alphabets.widgets.Message;
-import com.alphabets.widgets.WordBlock;
+import com.alphabets.progress.ProgressData;
+import com.alphabets.view.BlockLayout;
+import com.alphabets.widgets.BlockCompletedListener;
+import com.alphabets.widgets.raw.VisualBlock;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -17,34 +18,27 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
-public class MainActivity extends Activity {
+@SuppressLint("ClickableViewAccessibility")
+public class MainActivity extends Activity implements DataReadyListener, BlockCompletedListener {
+	
+	/*
+	 * TODO if switched on for first time sometimes sets block1 as active
+	 */
 	
 	// layouts
-	private LinearLayout main;
+	private BlockLayout main;
 	private RelativeLayout bottom;
 	
-	// raw data
-	private Map<Integer, String[]> positionMap;
-	
-	// widgets
-	private WordBlock[] wordBlock;
-	private Message[] message;
-	
 	// current item data
-	private boolean currentIsWord;
-	private int currentItem; // number of current type of item, e.g. 3rd WordBlock, or 5th Message
-	private int currentBlock; // number of current item disregarding the type
-	private int blocks;
+	private int currentBlock; // number of current item
 	private int amountScrolled;
+	private boolean loading;
 	
 	// other
-	private int blockHeight;
 	private ScrollView scroll;
-	float coord = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,45 +47,22 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_activity);
 		scroll = (ScrollView) findViewById(R.id.scroll);
-		main = (LinearLayout) findViewById(R.id.main);
+		main = (BlockLayout) findViewById(R.id.main);
 		
 		// initialize keyboard functionality
 		Keyboard.initialize(this);
 		
-		/*
-		 * TODO sort out getting progress data and
-		 * 		injecting in here
-		 */
-		
 		// retrieve completion data
 		currentBlock = 0;
-		currentItem = 0;
-		while(Data.isBlockCompleted(currentBlock))
+		loading = true;
+		ProgressData data = new ProgressData(this);
+//		data.clear(); // for testing
+		while(data.isBlockCompleted(currentBlock))
 			currentBlock++;
 		
-		wordBlock = Loader.getWordBlocks();
-		message = Loader.getMessages();
-		positionMap = Loader.getPositionMap();
-		
-		int counter = 0;
-		long time = System.currentTimeMillis();
-		for(int i=positionMap.size()-1; i>=0; i--) {
-			
-			String[] object = positionMap.get(i);
-			String type = object[0];
-			int number = Integer.parseInt(object[1]);
-			
-			if(type.equals("m"))
-				main.addView(message[number], counter);
-			else if(type.equals("w"))
-				main.addView(wordBlock[number], counter);
-			
-			counter++;
-			
-		}
-		
-		Log.e("STUFF", "end placing at " + (System.currentTimeMillis()-time));
-		
+		DataLoader loader = new DataLoader(this);
+		loader.execute(currentBlock);
+				
 		/*
 		 * 
 		 *  required to lift the screen up at the beginning
@@ -101,57 +72,6 @@ public class MainActivity extends Activity {
 		bottom = (RelativeLayout) findViewById(R.id.bottom_of_screen);
 		main.removeView(bottom);
 		main.addView(bottom);
-		
-		blocks = main.getChildCount();
-		
-		// scroll to current block
-		scroll.post(new Runnable() {
-		
-			@Override
-			public void run() {
-				
-				blockHeight = wordBlock[0].getHeight();
-				main.setOnTouchListener(disableActions);
-				int amountToScroll = main.getHeight() - currentBlock*(-blockHeight);
-				amountScrolled = 0;
-				
-				while(amountScrolled<amountToScroll) {
-
-					scroll.scrollBy(0, 1);
-					amountScrolled++;
-					try {
-						TimeUnit.MICROSECONDS.sleep(1);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					
-					if(amountScrolled==amountToScroll) {
-						
-						main.setOnTouchListener(enableActions);
-						String[] blockData = positionMap.get(currentBlock);
-						currentIsWord = blockData[0].equals("w");
-						if(currentIsWord)
-							runOnUiThread(new Runnable() {
-							
-								@Override
-								public void run() {
-									
-									wordBlock[currentItem].getWriter().requestFocus();
-									Keyboard.show();
-									
-								}
-							
-							});		
-						
-					}
-					
-				}
-				
-			}
-		
-		});
-		
-		setFocusedBlock();
 		
 	}
 	
@@ -165,30 +85,27 @@ public class MainActivity extends Activity {
 		
 	private void setFocusedBlock() {
 		
-		// update current item data
-		String[] blockData = positionMap.get(currentBlock);
-		currentIsWord = blockData[0].equals("w");
-		currentItem = Integer.parseInt(blockData[1]);
-		
 		// scroll down to the new focused block
-		final int amountToScroll = (currentBlock==0) ? 0 : -blockHeight;
+		final int amountToScroll = -getBlockHeight();
 		amountScrolled = 0;
 		
 		// disable actions, so the user doesn't mess up
 		// the auto scroll
 		main.setOnTouchListener(disableActions);
-		
+				
 		Thread th = new Thread(new Runnable() {
 			
 			@Override
 			public void run() {
+				
+				int delay = loading? 0 : 3;
 				
 				while(amountScrolled>amountToScroll) {
 
 					scroll.scrollBy(0, -1);
 					amountScrolled--;
 					try {
-						TimeUnit.MILLISECONDS.sleep(3);
+						TimeUnit.MILLISECONDS.sleep(delay);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -196,18 +113,12 @@ public class MainActivity extends Activity {
 					if(amountScrolled==amountToScroll) {
 						
 						main.setOnTouchListener(enableActions);
-						if(currentIsWord)
-							runOnUiThread(new Runnable() {
-							
-								@Override
-								public void run() {
-									
-									wordBlock[currentItem].setActive();
-									Keyboard.show();
-									
-								}
-							
-							});					
+						runOnUiThread(new Runnable() {
+							@Override
+							public void run() {	
+								((VisualBlock) main.getChildAt(getCurrentBlock())).setActive();
+							}	
+						});					
 						
 					}
 					
@@ -226,49 +137,19 @@ public class MainActivity extends Activity {
 	 * 
 	 */
 		
-	/*
-	 * 
-	 * TODO need to sort this to update progress,
-	 * 		set stuff as unlocked
-	 * 
-	 */
-	public void finishBlock() {
-				
-		if(currentIsWord) {
+	@Override
+	public void onBlockCompleted() {
 		
-			Keyboard.hide();
-		
-		} else {
-			
-//			main.addView(message[currentItem], this.getBlockNumber());
-			
-		}
-		
+		Log.e("STUFF", "completed");
 		currentBlock++;
 		this.setFocusedBlock();
 		
 	}
 	
-	/*
-	 * 
-	 * Using this method as the layout is from bottom to top
-	 * 
-	 */
-	
-	/*
-	 * 
-	 * TODO not removing yet as might be useful later.
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	private int getBlockNumber() {		
-		return blocks - 2 - currentBlock;
-	}
-	
 	@Override
 	public void onBackPressed() {
 		
-		QuitDialog.showQuitDialog(this);
+		QuitDialog.show(this);
 		
 	}
 	
@@ -292,5 +173,106 @@ public class MainActivity extends Activity {
 		}
 		
 	};
+	
+	/*
+	 * 
+	 * Utility methods
+	 * 
+	 */
+	
+	private int getBlockHeight() {
+		return main.getChildAt(main.getChildCount()-1).getHeight();
+	}
+	
+	private int getCurrentBlock() {
+		return main.getChildCount() - currentBlock - 2;
+	}
+	
+	/*
+	 * 
+	 * called whenever a block is loaded up in DataLoader
+	 * 
+	 */
+
+	@Override
+	public void blockIsReady(final VisualBlock block) {
+						
+		// for first addition
+		if(main.getChildCount()==1) {
+			
+			this.runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+
+					main.addView(block, 0);
+					block.setActive();
+					lowestBlockPosition = block.getPosition();
+					scrollToCurrentBlock();
+					
+				}
+				
+			});
+			
+			return;
+			
+		}
+		
+		final int index = block.getPosition();
+		int indexToSet = main.getChildCount()-1;
+		int highestPreviousPos = 0;
+		
+		for(int i=0; i<main.getChildCount(); i++) {
+			
+			View object = main.getChildAt(i);
+			
+			if(object instanceof VisualBlock) {
+				
+				int childPos = ((VisualBlock) object).getPosition();
+				if(childPos<index && highestPreviousPos<=childPos) {
+					
+					indexToSet = i;
+					highestPreviousPos = childPos;
+				
+				}
+				
+			} else continue;			
+			
+		}
+		
+		final int toSet = indexToSet;
+		
+		this.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				main.addView(block, toSet);
+				if(index<lowestBlockPosition)
+					lowestBlockPosition = index;
+				scrollToCurrentBlock();
+				
+			}
+			
+		});
+		
+	}
+	
+	@Override
+	public void loadComplete() {
+		loading = false;
+	}
+	
+	/*
+	 * 
+	 * Called when a new block is loaded up
+	 * 
+	 */
+	
+	int lowestBlockPosition;
+	
+	private void scrollToCurrentBlock() {
+		scroll.scrollTo(0, main.getHeight() - ((currentBlock-lowestBlockPosition)+2)*getBlockHeight());
+	}
 	
 }
