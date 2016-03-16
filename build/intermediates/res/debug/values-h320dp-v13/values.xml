@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- From: file:/D:/Java/Workspace/Alphabets/build/intermediates/exploded-aar/Workspace/appcompat_v7/unspecified/res/values-h320dp-v13/values.xml -->
-    <eat-comment />
-
-    <bool name="abc_allow_stacked_button_bar">true</bool>
-
-</resources>
