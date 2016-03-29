@@ -61,7 +61,7 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 		currentBlock = 0;
 		loading = true;
 		data = new ProgressData(this);
-		data.clear(); // for testing
+	//	data.clear(); // for testing
 		while(data.isBlockCompleted(currentBlock))
 			currentBlock++;
 				
@@ -89,7 +89,7 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	 */
 		
 	private void setFocusedBlock() {
-		
+				
 		// scroll down to the new focused block
 		final int amountToScroll = -getBlockHeight();
 		amountScrolled = 0;
@@ -185,7 +185,7 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	 */
 	
 	private int getBlockHeight() {
-		return main.getChildAt(main.getChildCount()-1).getHeight();
+		return main.getChildAt(1).getHeight();
 	}
 	
 	private int getCurrentBlock() {
@@ -197,12 +197,16 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	 * called whenever a block is loaded up in DataLoader
 	 * 
 	 */
-
+	
+	private boolean firstWasSet;
+	
 	@Override
 	public void blockIsReady(final VisualBlock block) {
 						
 		// for first addition
-		if(main.getChildCount()==1) {
+		if(!firstWasSet) {
+			
+			firstWasSet = true;
 			
 			this.runOnUiThread(new Runnable() {
 				
@@ -273,10 +277,11 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	 * 
 	 */
 	
-	int lowestBlockPosition;
+	private int lowestBlockPosition;
 	
 	private void scrollToCurrentBlock() {
-		scroll.scrollTo(0, main.getHeight() - ((currentBlock-lowestBlockPosition)+2)*getBlockHeight());
+		int addition = currentBlock!=0 ? 1 : 0;
+		scroll.scrollTo(0, main.getHeight() - ((currentBlock-lowestBlockPosition+2+addition))*getBlockHeight());		
 	}
 	
 	/*

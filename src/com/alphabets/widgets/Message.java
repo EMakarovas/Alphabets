@@ -15,6 +15,9 @@ public class Message extends VisualBlock {
 	private CustomTextView tv;
 	private BlockCompletedListener listener;
 	
+	private float activeTextSize;
+	private float unfocusedTextSize;
+	
 	@SuppressLint("ClickableViewAccessibility")
 	public Message(Context context, int position, String message) {
 		
@@ -25,6 +28,9 @@ public class Message extends VisualBlock {
 				
 		tv = (CustomTextView) this.findViewById(R.id.message);
 		tv.setText(message);
+		activeTextSize = tv.getTextSize();
+		unfocusedTextSize = activeTextSize*3/5;
+		tv.setTextSize(unfocusedTextSize);
 		this.setOnTouchListener(touchListener);
 		
 	}
@@ -50,14 +56,15 @@ public class Message extends VisualBlock {
 	@Override
 	public void setActive() {
 		
-		setUnlocked(true);
 		setIsCurrent(true);
+		tv.setTextSize(activeTextSize);
 		
 	}
 	
 	@Override
 	public void completeBlock() {
 		
+		tv.setTextSize(unfocusedTextSize);
 		setCompleted(true);
 		setIsCurrent(false);
 		listener.onBlockCompleted();

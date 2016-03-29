@@ -24,7 +24,6 @@ public class ProgressData {
 	}
 	
 	public static final String BLOCK_COMPLETED = "Block_Completed_";
-	public static final String BLOCK_UNLOCKED = "Block_Unlocked_";
 	public static final String BLOCK_COMPLETED_DATA = "Block_Completion_Data_";
 	
 	public boolean isBlockCompleted(int blockNumber) {
@@ -36,20 +35,6 @@ public class ProgressData {
 	public void setBlockCompleted(int blockNumber) {
 		
 		editor.putBoolean(BLOCK_COMPLETED + blockNumber, true);
-		editor.commit();
-		
-	}
-	
-	public boolean isBlockUnlocked(int blockNumber) {
-		
-		if(blockNumber==0) return true;
-		return preferences.getBoolean(BLOCK_UNLOCKED + blockNumber, false);
-		
-	}
-	
-	public void setBlockUnlocked(int blockNumber) {
-		
-		editor.putBoolean(BLOCK_UNLOCKED + blockNumber, true);
 		editor.commit();
 		
 	}

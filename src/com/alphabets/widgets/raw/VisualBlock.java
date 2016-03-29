@@ -30,20 +30,6 @@ public abstract class VisualBlock extends LinearLayout {
 		return isCurrent;
 	}
 	
-	public boolean isUnlocked() {
-		
-		ProgressData data = new ProgressData(this.getContext());
-		return data.isBlockUnlocked(position);
-		
-	}
-	
-	public void setUnlocked(boolean mode) {
-		
-		ProgressData data = new ProgressData(this.getContext());
-		data.setBlockUnlocked(position);
-		
-	}
-	
 	public boolean isCompleted() {
 		
 		ProgressData data = new ProgressData(this.getContext());

@@ -71,7 +71,7 @@ public class DataLoader extends AsyncTask<Integer, Object, Object> {
 		int goingUp = currentBlock;
 		
 		while(goingUp<positionMap.size() || goingDown>=0) {
-						
+			
 			try {
 				TimeUnit.MILLISECONDS.sleep(5);
 			} catch (InterruptedException e) {
@@ -81,7 +81,7 @@ public class DataLoader extends AsyncTask<Integer, Object, Object> {
 						
 			if(goingUp<positionMap.size())
 				loadBlock(goingUp++);
-			
+						
 			if(goingDown>=0) 
 				loadBlock(goingDown--);
 			

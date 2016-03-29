@@ -57,8 +57,7 @@ public class WordBlock extends WordGroup {
 		
 		this.setOnTouchListener(doubleClickListener);
 		
-		if(!isUnlocked())
-			writer.setFocusable(false);
+		writer.setFocusable(false);
 		
 		if(isCompleted()) {
 			insertWriterText(new ProgressData(this.getContext()).getCompletionData(getPosition()));
@@ -149,6 +148,8 @@ public class WordBlock extends WordGroup {
 
 		setCompleted(true);
 		setIsCurrent(false);
+		writer.setFocusable(false);
+		writer.setFocusableInTouchMode(false);
 		
 		for(BlockCompletedListener listener : completionListeners)
 			listener.onBlockCompleted();		
@@ -173,7 +174,6 @@ public class WordBlock extends WordGroup {
 	public void setActive() {
 		
 		setIsCurrent(true);
-		setUnlocked(true);
 		
 		writer.setFocusableInTouchMode(true);
 		writer.requestFocus();
@@ -262,7 +262,7 @@ public class WordBlock extends WordGroup {
 				if(currentClickTime - lastClickTime<250) {
 					
 					// handle double click action
-					if(isUnlocked())
+					if(getIsCurrent())
 						handleDoubleClick();
 
 					// reset millis counter
