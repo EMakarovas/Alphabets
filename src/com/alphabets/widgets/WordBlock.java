@@ -1,5 +1,6 @@
 package com.alphabets.widgets;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -30,14 +31,18 @@ public class WordBlock extends WordGroup {
 	private EditText writer;
 	private CustomTextView mainWord;
 	private CustomTextView translationView;
-	private BlockCompletedListener listener;
+	private List<BlockCompletedListener> completionListeners;
 	
-	public WordBlock(Context context, int position, String orgWord, String newWord, String translation) {
+	private int wordBlockNumber;
+	
+	public WordBlock(Context context, int position, String orgWord, String newWord, String translation, int wordBlockNumber) {
 		
 		super(context, position, orgWord, newWord, translation);
 		View.inflate(context, R.layout.word_block, this);
 		
-		listener = (MainActivity) context;
+		completionListeners = new ArrayList<BlockCompletedListener>();
+		completionListeners.add((MainActivity) context);
+		completionListeners.add(((MainActivity) context).getProgressBar());
 				
 		mainWord = (CustomTextView) this.findViewById(R.id.main_word);
 		mainWord.setText(getOrgWord().getWord());
@@ -46,7 +51,9 @@ public class WordBlock extends WordGroup {
 		translationView.setText(getTranslation());
 		
 		writer = (EditText) this.findViewById(R.id.write);
-		writer.addTextChangedListener(watcher);		
+		writer.addTextChangedListener(watcher);	
+		
+		this.wordBlockNumber = wordBlockNumber;
 		
 		this.setOnTouchListener(doubleClickListener);
 		
@@ -58,6 +65,17 @@ public class WordBlock extends WordGroup {
 			performAnimation(0, 0);
 		}
 		
+	}
+	
+	/*
+	 * 
+	 * Get word block number - used for
+	 * progress bar.
+	 * 
+	 */
+	
+	public int getBlockNumber() {
+		return wordBlockNumber;
 	}
 	
 	/*
@@ -123,10 +141,17 @@ public class WordBlock extends WordGroup {
 	public void completeBlock() {
 		
 		Keyboard.hide();
-		new ProgressData(this.getContext()).setCompletionData(getPosition(), getNewWord().getUserInput().toString());
+		
+		ProgressData data = new ProgressData(this.getContext());
+		
+		data.setCompletionData(getPosition(), getNewWord().getUserInput().toString());
+		data.setBlockCompleted();
+
 		setCompleted(true);
 		setIsCurrent(false);
-		listener.onBlockCompleted();		
+		
+		for(BlockCompletedListener listener : completionListeners)
+			listener.onBlockCompleted();		
 		
 	}
 	
@@ -285,8 +310,8 @@ public class WordBlock extends WordGroup {
 	
 	private void handleDoubleClick() {
 		
-		String newInput = getNewWord().getWithNextBlock();
-		writer.setText(newInput);
+		Spanned newInput = getNewWord().getWithNextBlock();
+		setWriterText(newInput);
 		
 	}
 

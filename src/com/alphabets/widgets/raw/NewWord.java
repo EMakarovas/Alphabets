@@ -10,11 +10,11 @@ import android.text.TextUtils;
 
 public class NewWord {
 	
-	private String[] blocks;
+	private String[][] blocks;
 	private boolean[] correct;
 	private boolean[] blockCompleted;
 	private List<Boolean[]> dataList;
-	private String userInput = "";
+	private String[] userInput;
 	private boolean wordCompleted;
 	
 	public NewWord(String unformattedWord) {
@@ -29,18 +29,44 @@ public class NewWord {
 			
 		}
 		
-		blocks = new String[blockAmount];
+		blocks = new String[blockAmount][];
 		correct = new boolean[blockAmount]; // initialized to false
 		blockCompleted = new boolean[blockAmount];
+		userInput = new String[blockAmount];
 		
 		int blockCounter = 0;
 		int start = 0;
-		int end;
 		
 		while(blockCounter<blockAmount) {
 			
-			end = unformattedWord.indexOf(".", start);
-			blocks[blockCounter] = unformattedWord.substring(start, end);
+			int end = unformattedWord.indexOf(".", start);
+			String unformattedBlock = unformattedWord.substring(start, end);
+			boolean hasMultipleCorrect = unformattedBlock.contains("/");
+			List<String> possibleBlocks = new ArrayList<String>();
+			
+			if(hasMultipleCorrect) {
+				
+				while(unformattedBlock.length()>0) {
+					
+					int slashPos = unformattedBlock.indexOf("/");
+					String smallBlock = unformattedBlock.substring(0, slashPos);
+					unformattedBlock = unformattedBlock.substring(slashPos+1);
+					possibleBlocks.add(smallBlock);
+					
+				}
+				
+			} else possibleBlocks.add(unformattedBlock);
+			
+			blocks[blockCounter] = new String[possibleBlocks.size()];
+			
+			for(int i=0; i<possibleBlocks.size(); i++) {
+				
+				Object obj = possibleBlocks.get(i);
+				
+				blocks[blockCounter][i] = obj.toString();
+				
+			}
+			
 			start = end+1;
 			blockCounter++;
 			
@@ -52,80 +78,111 @@ public class NewWord {
 		return wordCompleted;
 	}
 	
-	public String getBlock(int blockNumber) {
-		return blocks[blockNumber];
-	}
-	
-	public boolean blockIsCorrect(int blockNumber) {
-		return correct[blockNumber];
-	}
-	
-	public boolean blockIsCompleted(int blockNumber) {
-		return blockCompleted[blockNumber];
-	}
-	
-	public void setBlockCorrect(boolean correct, int blockNumber) {
-		this.correct[blockNumber] = correct;
-	}
-	
-	public void setBlockCompleted(boolean completed, int blockNumber) {
-		this.blockCompleted[blockNumber] = completed;
-	}
-	
-	public int getBlockNumber(int letterPos) {
-		
-		String toAdd = "";
-		int counter = 0;
-		
-		while(true) {
-			
-			toAdd += blocks[counter];
-			if(toAdd.length()>letterPos)
-				return counter;
-			counter++;
-			
-		}
-		
-	}
-	
 	public void compareInputToWord(String input) {
-
-		userInput = input;
-		int lettersCompleted = userInput.length();
-		int arrayCounter = 0;
-		int letterCounter = 0;
+						
+		int inputLength = input.length();
+		int posCounter = 0;
+		int blockCounter = 0;
+		String currentBlock = "";
 		
-		while(true) {
+		if(inputLength==0)
+			userInput[0] = "";
+		
+		wordLoop: while(posCounter<inputLength) {
 			
-			if(arrayCounter==blocks.length) {
-				wordCompleted = true;
-				break;
-			} else wordCompleted = false;
+			currentBlock += input.charAt(posCounter);
+						
+			for(int i=0; i<blocks[blockCounter].length; i++) {
+				
+				String correctBlock = blocks[blockCounter][i];
+				
+				// check if any correct blocks are equal to current
+				if(currentBlock.equals(correctBlock)) {
+					
+					blockCompleted[blockCounter] = true;
+					correct[blockCounter] = true;
+					userInput[blockCounter] = currentBlock;
+					currentBlock = "";
+					blockCounter++;
+					posCounter++;
+					continue wordLoop;
+					
+				} 
+					
+			}
+				
+			/*
+			 * reaches this point if currentBlock did not
+			 * find a match.
+			 * check if there could be potential matches later
+			 * (because blocks[][] has a longer String)
+			 */
 			
-			String wordBlock = blocks[arrayCounter];
-			int blockLength = wordBlock.length();
-			int inputBlockEnd = letterCounter + blockLength;
+			// gets the longest length of potential blocks				
+			int longestLength = 0;
+			for(int j=0; j<blocks[blockCounter].length; j++)
+				if(blocks[blockCounter][j].length()>longestLength)
+					longestLength = blocks[blockCounter][j].length();
+							
+			// no more potentially correct blocks - the block is incorrect
+			if(currentBlock.length()==longestLength) {
+												
+				blockCompleted[blockCounter] = true;
+				correct[blockCounter] = false;
+				userInput[blockCounter] = currentBlock;
+				currentBlock = "";
+				blockCounter++;
+				posCounter++;
+				continue wordLoop;
+											
+			}
 			
-			if(inputBlockEnd<=lettersCompleted) {
+			/*
+			 * Reaches this if currentBlock did not find a match
+			 * AND there are potential blocks later
+			 */
+						
+			// unfinished multiple letter block
+			if(posCounter==inputLength-1) {
 				
-				String blockFromInput = input.substring(letterCounter, inputBlockEnd);
+				userInput[blockCounter] = currentBlock;
+				correct[blockCounter] = false;
+				blockCompleted[blockCounter] = false;
+				blockCounter++;
+				break wordLoop;
 				
-				blockCompleted[arrayCounter] = true;				
-				correct[arrayCounter] = wordBlock.equalsIgnoreCase(blockFromInput);
-				
-				letterCounter = inputBlockEnd;
-				arrayCounter++;
-				
-			} else break;
+			}
+			
+			/*
+			 * Reaches this if currentBlock did not find a match
+			 * AND there are potential blocks later
+			 * AND this isn't the last letter in input
+			 */
+			
+			userInput[blockCounter] = currentBlock;
+			posCounter++;
 			
 		}
 		
-		for(int i=arrayCounter; i<correct.length; i++) { // set arrays to default when deleting text
+		for(int i=blockCounter; i<correct.length; i++) { // set arrays to default when deleting text
 			
 			correct[i] = false;
 			blockCompleted[i] = false;
+			userInput[i] = "";
 			
-		}
+		}	
+		
+		// Set word as completed
+		boolean completed = true;
+		for(int i=0; i<blockCompleted.length; i++)
+			if(!blockCompleted[i]) {
+				
+				completed = false;
+				break;
+				
+			}
+			
+		wordCompleted = completed;
 		
 	}
 	
@@ -152,98 +209,62 @@ public class NewWord {
 		
 	}
 	
-	public String getWithNextBlock() {
+	public Spanned getWithNextBlock() {
 		
-		String toReturn = "";
-				
-		int alreadyDone = userInput.length();
+		Spanned toReturn = new SpannableString("");
 		
-		String checker = "";
-		
-		for(int i=0; i<blocks.length; i++) {
-			
-			checker += blocks[i];
-			int checkerLength = checker.length();
-			
-			if(checkerLength>alreadyDone) {
-				
-				String block = blocks[i];
-				
-				int untouchableWordLetters = checkerLength - block.length();
-				
-				String untouchableWordPart = userInput.substring(0, untouchableWordLetters);
-				
-				toReturn = untouchableWordPart + block;
+		int blockCounter = 0;
 
+		while(blockCounter<blocks.length) {
+									
+			if(blockCompleted[blockCounter]) {
+				
+				Spanned toAdd = (correct[blockCounter]) ? colorCorrect(userInput[blockCounter]) : colorWrong(userInput[blockCounter]);				
+				toReturn = (Spanned) TextUtils.concat(toReturn, toAdd);
+				
+			} else {
+				
+				Spanned toAdd = colorCorrect(blocks[blockCounter][0]);
+				toReturn = (Spanned) TextUtils.concat(toReturn, toAdd);
 				break;
 				
 			}
 			
-		}
-		
-		return toReturn;
-				
-	}
-	
-	public Spanned getWord() {
-		
-		Spanned toReturn = new SpannableString("");
-		
-		for(int i=0; i<blocks.length; i++) {
-			
-			Spanned toAdd = null;
-			
-			if(blockCompleted[i]) {
-				
-				toAdd = (correct[i]) ? this.colorCorrect(blocks[i]) : this.colorWrong(blocks[i]);
-				
-			} else toAdd = this.colorNotCompleted(blocks[i]); 
-			
-			toReturn = (Spanned) TextUtils.concat(toReturn, toAdd);
+			blockCounter++;
 			
 		}
 		
 		return toReturn;
-		
+				
 	}
 	
 	public Spanned getUserInput() {
 		
 		Spanned toReturn = new SpannableString("");
 		
-		int arrayCounter = 0;
-		int letterCounter = 0;
-		int lettersCompleted = userInput.length();
-		
-		while(true) {
-			
-			if(arrayCounter==blocks.length)
-				break;
+		int blockCounter = 0;
 
-			String wordBlock = blocks[arrayCounter];
-			int blockLength = wordBlock.length();
-			int inputBlockEnd = letterCounter + blockLength;
-			
-			if(inputBlockEnd<=lettersCompleted) {
-
-				String blockFromInput = userInput.substring(letterCounter, inputBlockEnd);
-				
-				Spanned toAdd = (correct[arrayCounter]) ? this.colorCorrect(blockFromInput) : this.colorWrong(blockFromInput);
+		while(blockCounter<blocks.length) {
 									
+			if(blockCompleted[blockCounter]) {
+				
+				Spanned toAdd = (correct[blockCounter]) ? colorCorrect(userInput[blockCounter]) : colorWrong(userInput[blockCounter]);			
 				toReturn = (Spanned) TextUtils.concat(toReturn, toAdd);
 				
-				letterCounter = inputBlockEnd;
-				arrayCounter++;
+			} else {
 				
-			} else if(letterCounter<lettersCompleted) {
+				if(userInput[blockCounter]==null && userInput[blockCounter].equals(""))
+					break;
 				
-				Spanned toAdd = this.colorNotCompleted(userInput.substring(letterCounter, lettersCompleted)); 
+				Spanned toAdd = colorNotCompleted(userInput[blockCounter]);
 				
 				toReturn = (Spanned) TextUtils.concat(toReturn, toAdd);
 				
 				break;
 				
-			} else break;
+			}
+			
+			blockCounter++;
 			
 		}
 		

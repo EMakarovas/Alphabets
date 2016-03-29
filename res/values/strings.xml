@@ -9,5 +9,6 @@
     <string name="quit_msg">Those words won\'t get transliterated by themselves. Are you sure you want to quit Alphabet Ladder?</string>
     <string name="error_title">Error</string>
     <string name="error_msg">An internal error has occurred. Unfortunately, you need to restart Alphabet Ladder.</string>
+    <string name="progress">Progress: </string>
 
 </resources>

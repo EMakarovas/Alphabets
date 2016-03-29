@@ -7,5 +7,5 @@ public interface DataReadyListener {
 	void blockIsReady(VisualBlock block);
 	
 	void loadComplete();
-	
+		
 }

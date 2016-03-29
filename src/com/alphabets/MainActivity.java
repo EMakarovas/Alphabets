@@ -8,13 +8,13 @@ import com.alphabets.functional.Keyboard;
 import com.alphabets.functional.QuitDialog;
 import com.alphabets.progress.ProgressData;
 import com.alphabets.view.BlockLayout;
+import com.alphabets.view.CustomProgressBar;
 import com.alphabets.widgets.BlockCompletedListener;
 import com.alphabets.widgets.raw.VisualBlock;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -37,8 +37,12 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	private int amountScrolled;
 	private boolean loading;
 	
-	// other
+	// items
 	private ScrollView scroll;
+	private CustomProgressBar progBar;
+	
+	// progress
+	private ProgressData data;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +52,7 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 		setContentView(R.layout.main_activity);
 		scroll = (ScrollView) findViewById(R.id.scroll);
 		main = (BlockLayout) findViewById(R.id.main);
+		progBar = (CustomProgressBar) findViewById(R.id.progress_bar);
 		
 		// initialize keyboard functionality
 		Keyboard.initialize(this);
@@ -55,11 +60,11 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 		// retrieve completion data
 		currentBlock = 0;
 		loading = true;
-		ProgressData data = new ProgressData(this);
-//		data.clear(); // for testing
+		data = new ProgressData(this);
+		data.clear(); // for testing
 		while(data.isBlockCompleted(currentBlock))
 			currentBlock++;
-		
+				
 		DataLoader loader = new DataLoader(this);
 		loader.execute(currentBlock);
 				
@@ -140,9 +145,8 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	@Override
 	public void onBlockCompleted() {
 		
-		Log.e("STUFF", "completed");
 		currentBlock++;
-		this.setFocusedBlock();
+		setFocusedBlock();
 		
 	}
 	
@@ -273,6 +277,16 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	
 	private void scrollToCurrentBlock() {
 		scroll.scrollTo(0, main.getHeight() - ((currentBlock-lowestBlockPosition)+2)*getBlockHeight());
+	}
+	
+	/*
+	 * 
+	 * Getter method for progress bar
+	 * 
+	 */
+	
+	public CustomProgressBar getProgressBar() {
+		return progBar;
 	}
 	
 }

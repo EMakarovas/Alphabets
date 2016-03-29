@@ -4,7 +4,6 @@ import com.alphabets.widgets.raw.VisualBlock;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -64,7 +63,6 @@ public class BlockLayout extends LinearLayout {
 							
 							this.removeViewAt(currentIndex);
 							super.addView(child, --currentIndex);
-							Log.e("STUFF", "changed high");
 						
 						}
 						
@@ -87,7 +85,6 @@ public class BlockLayout extends LinearLayout {
 							
 							this.removeViewAt(currentIndex);
 							super.addView(child, ++currentIndex);
-							Log.e("STUFF", "changed low");
 						
 						}
 						

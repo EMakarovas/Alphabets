@@ -1,22 +1,52 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/scroll"
-    android:background="@color/background" >
+    android:layout_height="match_parent"
+    android:id="@+id/main_layout"
+    android:orientation="vertical"
+	android:background="@color/background" >
     
-    <com.alphabets.view.BlockLayout
-        android:id="@+id/main"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="25dp"
+        android:orientation="horizontal" >
         
-        <RelativeLayout
-        	android:id="@+id/bottom_of_screen"
+        	<com.alphabets.view.CustomTextView
+        	    android:layout_width="wrap_content"
+        	    android:layout_height="match_parent"
+        	    android:textSize="20sp"
+        	    android:gravity="center"
+        	    android:text="@string/progress" />
+        	
+        	<com.alphabets.view.CustomProgressBar
+        	    android:id="@+id/progress_bar"
+		        style="@android:style/Widget.ProgressBar.Horizontal"
+		        android:layout_width="match_parent"
+		        android:layout_height="match_parent"
+		        android:layout_margin="1dp"
+		        android:background="#2EFE2E" />
+        
+    </LinearLayout>
+
+	<ScrollView
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:id="@+id/scroll" >
+	    
+	    <com.alphabets.view.BlockLayout
+	        android:id="@+id/main"
 	        android:layout_width="match_parent"
-	        android:layout_height="200dp" >
-        
-   		</RelativeLayout>
-        
-    </com.alphabets.view.BlockLayout>
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" >
+	        
+	        <RelativeLayout
+	        	android:id="@+id/bottom_of_screen"
+		        android:layout_width="match_parent"
+		        android:layout_height="200dp" >
+	        
+	   		</RelativeLayout>
+	        
+	    </com.alphabets.view.BlockLayout>
 
 </ScrollView>
+
+</LinearLayout>

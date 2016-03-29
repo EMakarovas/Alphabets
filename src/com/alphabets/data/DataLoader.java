@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.alphabets.MainActivity;
 import com.alphabets.functional.ErrorDialog;
+import com.alphabets.progress.ProgressData;
 import com.alphabets.widgets.Message;
 import com.alphabets.widgets.WordBlock;
 
@@ -40,7 +41,7 @@ public class DataLoader extends AsyncTask<Integer, Object, Object> {
 
 	@Override
 	protected Object doInBackground(Integer... params) {
-		
+				
 		// retrieve game data
 		try {
 			dataReader = new DataReader(context);
@@ -48,7 +49,7 @@ public class DataLoader extends AsyncTask<Integer, Object, Object> {
 			e.printStackTrace();
 			ErrorDialog.show(context);
 		}
-		
+				
 		// retrieve raw data
 		orgWords = dataReader.getOrgWords();
 		newWords = dataReader.getNewWords();
@@ -57,16 +58,20 @@ public class DataLoader extends AsyncTask<Integer, Object, Object> {
 		positionMap = dataReader.getPositionMap();
 		int currentBlock = params[0];
 		
-		
+		// init progress data
+		ProgressData data = new ProgressData(this.context);
+		if(!data.numberOfBlocksWasSet())
+			data.setTotalNumberOfBlocks(orgWords.length);
+				
 		// initialize arrays
 		wordBlock = new WordBlock[orgWords.length];
 		message = new Message[msg.length];
-		
+
 		int goingDown = currentBlock-1;
 		int goingUp = currentBlock;
 		
 		while(goingUp<positionMap.size() || goingDown>=0) {
-			
+						
 			try {
 				TimeUnit.MILLISECONDS.sleep(5);
 			} catch (InterruptedException e) {
@@ -105,7 +110,7 @@ public class DataLoader extends AsyncTask<Integer, Object, Object> {
 		else if(type.equals("w")) {
 				
 			wordBlock[number] = new WordBlock(context, index, orgWords[number],
-					newWords[number], translation[number]);
+					newWords[number], translation[number], number);
 			readyListener.blockIsReady(wordBlock[number]);
 			
 		}
