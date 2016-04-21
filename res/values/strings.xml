@@ -10,5 +10,7 @@
     <string name="error_title">Error</string>
     <string name="error_msg">An internal error has occurred. Unfortunately, you need to restart Alphabet Ladder.</string>
     <string name="progress">Progress: </string>
+    <string name="help">Help: </string>
+    <string name="mistakes">Mistakes: </string>
 
 </resources>

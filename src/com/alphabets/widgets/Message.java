@@ -7,16 +7,17 @@ import com.alphabets.widgets.raw.VisualBlock;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.ScaleAnimation;
 
 public class Message extends VisualBlock {
 
 	private CustomTextView tv;
 	private BlockCompletedListener listener;
-	
-	private float activeTextSize;
-	private float unfocusedTextSize;
 	
 	@SuppressLint("ClickableViewAccessibility")
 	public Message(Context context, int position, String message) {
@@ -28,10 +29,9 @@ public class Message extends VisualBlock {
 				
 		tv = (CustomTextView) this.findViewById(R.id.message);
 		tv.setText(message);
-		activeTextSize = tv.getTextSize();
-		unfocusedTextSize = activeTextSize*3/5;
-		tv.setTextSize(unfocusedTextSize);
 		this.setOnTouchListener(touchListener);
+		
+		performAnimation(0, 0, ScaleType.SHRINK);
 		
 	}
 	
@@ -57,18 +57,103 @@ public class Message extends VisualBlock {
 	public void setActive() {
 		
 		setIsCurrent(true);
-		tv.setTextSize(activeTextSize);
+		performAnimation(1000, 500, ScaleType.GROW);
 		
 	}
 	
 	@Override
 	public void completeBlock() {
 		
-		tv.setTextSize(unfocusedTextSize);
+		performAnimation(1000, 500, ScaleType.SHRINK);
 		setCompleted(true);
 		setIsCurrent(false);
-		listener.onBlockCompleted();
 		
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				listener.onBlockCompleted();
+			}
+			
+		}, 1500);
+		
+	}
+	
+	/*
+	 * 
+	 * Animations
+	 * 
+	 */
+	
+	private void performAnimation(final int duration, final int offset, ScaleType scaleType) {
+		
+		final float scale = scaleType.equals(ScaleType.GROW) ? 2 : 0.5f;
+		final float endScale = scaleType.equals(ScaleType.GROW) ? 1 : 0.5f;
+		
+		((MainActivity) this.getContext()).runOnUiThread(new Runnable() {
+		
+			@Override
+			public void run() {
+				
+				final ScaleAnimation animation = new ScaleAnimation(1, scale,
+															1, scale,
+										Animation.RELATIVE_TO_SELF, 0.5f,
+										Animation.RELATIVE_TO_SELF, 0.5f);
+				
+				animation.setDuration(duration);
+				
+				animation.setAnimationListener(new AnimationListener() {
+
+					@Override
+					public void onAnimationEnd(Animation animation) {
+
+						final Handler handler = new Handler();
+						handler.postDelayed(new Runnable() {
+						
+							@Override
+							public void run() {
+								
+								tv.setScaleX(endScale);
+								tv.setScaleY(endScale);
+								
+							}
+							
+						}, 1);
+						
+					}
+
+					@Override
+					public void onAnimationRepeat(Animation animation) {
+
+					}
+
+					@Override
+					public void onAnimationStart(Animation animation) {						
+					}
+					
+				});
+				
+				final Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					
+					@Override
+					public void run() {
+						
+						tv.startAnimation(animation);
+						
+					}
+					
+				}, offset);
+				
+			}
+		
+		});
+		
+	}
+	
+	private enum ScaleType {
+		GROW, SHRINK;
 	}
 		
 }

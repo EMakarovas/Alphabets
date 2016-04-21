@@ -96,4 +96,72 @@ public class ProgressData {
 
 	}
 	
+	/*
+	 * 
+	 * Mistakes
+	 * 
+	 */
+	
+	private static final String MISTAKES_COMMITTED = "Mistakes_committed";
+	
+	public void setMistakeCommitted() {
+		
+		int currentMistakes = preferences.getInt(MISTAKES_COMMITTED, 0);
+		editor.putInt(MISTAKES_COMMITTED, ++currentMistakes);
+		editor.commit();
+		
+	}
+	
+	public int getMistakesCommitted() {
+		return preferences.getInt(MISTAKES_COMMITTED, 0);
+	}
+	
+	/*
+	 * 
+	 * Help
+	 * 
+	 */
+	
+	private static final int BLOCKS_TO_REFRESH = 2;
+	private static final int MAX_HELP_COUNT = 10;
+	
+	private static final String HELP_COUNTER = "Help_counter";
+	private static final String HELP_REFRESH = "Help_refreshes_at";
+	
+	public void setHelpUsed(int blockNumber) {
+		
+		int helpCount = preferences.getInt(HELP_COUNTER, MAX_HELP_COUNT);
+		editor.putInt(HELP_COUNTER, --helpCount);
+		
+		String refreshKey = HELP_REFRESH + (blockNumber+BLOCKS_TO_REFRESH);
+		int currentRefresh = preferences.getInt(refreshKey, 0);
+		editor.putInt(refreshKey, ++currentRefresh);
+		
+		editor.commit();
+		
+	}
+	
+	public boolean refreshHelpCount(int blockNumber) {
+		
+		String refreshKey = HELP_REFRESH + blockNumber;
+		int refreshCount = preferences.getInt(refreshKey, 0);
+		if(refreshCount==0)
+			return false;
+		
+		editor.putInt(refreshKey, 0);
+		
+		int currentHelpCount = preferences.getInt(HELP_COUNTER, MAX_HELP_COUNT);
+		int newHelpCount = currentHelpCount + refreshCount;
+		
+		editor.putInt(HELP_COUNTER, newHelpCount);
+		editor.commit();
+		
+		return true;
+		
+	}
+	
+	public int getHelpCount() {
+		return preferences.getInt(HELP_COUNTER, MAX_HELP_COUNT);
+	}
+	
 }

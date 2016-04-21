@@ -1,37 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main_layout"
     android:orientation="vertical"
 	android:background="@color/background" >
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="horizontal"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" >
-        
-        	<com.alphabets.view.CustomTextView
-        	    android:layout_width="wrap_content"
-        	    android:layout_height="match_parent"
-        	    android:textSize="18sp"
-        	    android:gravity="center"
-        	    android:text="@string/progress" />
-        	
-        	<com.alphabets.view.CustomProgressBar
-        	    android:id="@+id/progress_bar"
-		        style="@android:style/Widget.ProgressBar.Horizontal"
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-		        android:layout_margin="1dp"
-		        android:background="#2EFE2E" />
-        
-    </LinearLayout>
-
-	<ScrollView
+	
+    <ScrollView
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content"
+	    android:layout_centerInParent="true"
 	    android:id="@+id/scroll" >
 	    
 	    <com.alphabets.view.BlockLayout
@@ -49,6 +26,91 @@
 	        
 	    </com.alphabets.view.BlockLayout>
 
-</ScrollView>
+	</ScrollView>
+	
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+	    android:background="#00000000" >
+        
+         <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="25dp"
+	        android:orientation="horizontal"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginRight="5dp"
+	        android:id="@+id/progress_layout" >
+        
+        		<com.alphabets.view.CustomTextView
+	        	    android:layout_width="wrap_content"
+	        	    android:layout_height="match_parent"
+	        	    android:textSize="18sp"
+	        	    android:gravity="center"
+	        	    android:text="@string/progress" />
+        	
+	        	<com.alphabets.view.CustomProgressBar
+	        	    android:id="@+id/progress_bar"
+			        style="@android:style/Widget.ProgressBar.Horizontal"
+			        android:layout_width="match_parent"
+			        android:layout_height="match_parent"
+			        android:layout_margin="1dp"
+			        android:background="#2EFE2E" />
+	        
+	    </LinearLayout>
+    
+	    <RelativeLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="25dp"
+	        android:layout_marginLeft="5dp"
+	        android:layout_marginRight="5dp"
+	        android:id="@+id/counter_layout" >
+	        	
+	        	<LinearLayout
+	        	    android:layout_width="wrap_content"
+	        	    android:layout_height="match_parent"
+	        	    android:orientation="horizontal"
+	        	    android:layout_alignParentStart="true"
+	        	    android:layout_alignParentLeft="true" >
+	        	    
+	        	    	<com.alphabets.view.CustomTextView
+	        	    	    android:layout_width="wrap_content"
+	        	    	    android:layout_height="match_parent"
+	        	    	    android:textSize="18sp"
+	        	    	    android:text="@string/help" />
+	        	    	
+	        	    	<com.alphabets.view.HelpCounter
+	        	    	    android:layout_width="wrap_content"
+	        	    	    android:layout_height="match_parent"
+	        	    	    android:textSize="18sp"
+	        	    	    android:id="@+id/help_counter" />
+	        	    
+	        	</LinearLayout>
+	        	
+	        	<LinearLayout
+	        	    android:layout_width="wrap_content"
+	        	    android:layout_height="match_parent"
+	        	    android:orientation="horizontal"
+	        	    android:layout_alignParentEnd="true"
+	        	    android:layout_alignParentRight="true" >
+	        	    
+	        	   		<com.alphabets.view.CustomTextView
+	        	    	    android:layout_width="wrap_content"
+	        	    	    android:layout_height="match_parent"
+	        	    	    android:textSize="18sp"
+	        	    	    android:text="@string/mistakes" />
+	        	    	
+	        	    	<com.alphabets.view.MistakeCounter
+	        	    	    android:layout_width="wrap_content"
+	        	    	    android:layout_height="match_parent"
+	        	    	    android:textSize="18sp"
+	        	    	    android:id="@+id/mistake_counter" />
+	        	    
+	        	</LinearLayout>
+	        
+	    </RelativeLayout>      
+        
+    </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

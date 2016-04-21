@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.alphabets.MainActivity;
 import com.alphabets.R;
-import com.alphabets.functional.Keyboard;
 import com.alphabets.progress.ProgressData;
 import com.alphabets.view.CustomTextView;
 import com.alphabets.widgets.raw.WordGroup;
@@ -17,6 +16,7 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -32,6 +32,8 @@ public class WordBlock extends WordGroup {
 	private CustomTextView mainWord;
 	private CustomTextView translationView;
 	private List<BlockCompletedListener> completionListeners;
+	private MistakeListener mistakeListener;
+	private HelpListener helpListener;
 	
 	private int wordBlockNumber;
 	
@@ -43,6 +45,9 @@ public class WordBlock extends WordGroup {
 		completionListeners = new ArrayList<BlockCompletedListener>();
 		completionListeners.add((MainActivity) context);
 		completionListeners.add(((MainActivity) context).getProgressBar());
+		
+		mistakeListener = ((MainActivity) context).getMistakeCounter();
+		helpListener = ((MainActivity) context).getHelpCounter();
 				
 		mainWord = (CustomTextView) this.findViewById(R.id.main_word);
 		mainWord.setText(getOrgWord().getWord());
@@ -58,6 +63,7 @@ public class WordBlock extends WordGroup {
 		this.setOnTouchListener(doubleClickListener);
 		
 		writer.setFocusable(false);
+		writer.setOnTouchListener(writerTouchListener);
 		
 		if(isCompleted()) {
 			insertWriterText(new ProgressData(this.getContext()).getCompletionData(getPosition()));
@@ -121,13 +127,22 @@ public class WordBlock extends WordGroup {
 	
 	private void handleTextInput(String newTotalText, int oldLetterCount, int newLetterCount) {
 		
-		if(oldLetterCount!=newLetterCount) {
+		if(oldLetterCount<newLetterCount && getNewWord().isMoreTextDisabled())
+			updateCurrentBlock(); // ignores what was typed in
+		else if(oldLetterCount>newLetterCount || (oldLetterCount<newLetterCount && !getNewWord().isMoreTextDisabled())) {
 
 			getNewWord().compareInputToWord(newTotalText);
 			List<Boolean[]> newWordCompletionData = getNewWord().getData();
 			getOrgWord().updateData(newWordCompletionData);
 			
 			updateCurrentBlock();
+			
+			if(getNewWord().mistakeWasCommitted() && getIsCurrent()) {
+								
+				new ProgressData(this.getContext()).setMistakeCommitted();
+				mistakeListener.mistakeCommitted();
+				
+			}
 			
 			if(getNewWord().isCompleted() && getIsCurrent())
 				completeBlock();
@@ -138,9 +153,7 @@ public class WordBlock extends WordGroup {
 	
 	@Override
 	public void completeBlock() {
-		
-		Keyboard.hide();
-		
+			
 		ProgressData data = new ProgressData(this.getContext());
 		
 		data.setCompletionData(getPosition(), getNewWord().getUserInput().toString());
@@ -173,11 +186,9 @@ public class WordBlock extends WordGroup {
 	@Override
 	public void setActive() {
 		
-		setIsCurrent(true);
-		
-		writer.setFocusableInTouchMode(true);
-		writer.requestFocus();
-		Keyboard.show();
+		if(new ProgressData(this.getContext()).refreshHelpCount(wordBlockNumber))
+			helpListener.helpRefreshed();
+	
 		performAnimation(1000, 500);		
 		
 	}
@@ -199,15 +210,24 @@ public class WordBlock extends WordGroup {
 					@Override
 					public void onAnimationEnd(Animation animation) {
 						
-						// for some reason calling setTranslationY()
-						// straightaway messes up the animation
-						// added 1 sec delay to fix this issue
 						final Handler handler = new Handler();
 						handler.postDelayed(new Runnable() {
+							
+							@Override
 							public void run() {
+								
 								mainWord.setTranslationY(-writer.getHeight());
+								
+								if(duration!=0 && offset!=0) { // for when loading
+									
+									setIsCurrent(true);
+									writer.setFocusableInTouchMode(true);
+									writer.requestFocus();
+								
+								}
 
 							}
+							
 						}, 1);
 						
 					}
@@ -253,9 +273,7 @@ public class WordBlock extends WordGroup {
 			int action = event.getAction();
 			
 			if(action==MotionEvent.ACTION_DOWN) {
-							
-				v.performClick();
-				
+								
 				final long currentClickTime = System.currentTimeMillis();
 				
 				// is double click
@@ -310,9 +328,50 @@ public class WordBlock extends WordGroup {
 	
 	private void handleDoubleClick() {
 		
-		Spanned newInput = getNewWord().getWithNextBlock();
-		setWriterText(newInput);
+		ProgressData data = new ProgressData(this.getContext());
+		
+		if(data.getHelpCount()==0) 
+			Log.e("STUFF", "no more help!"); // TODO sort this out
+		else if(getNewWord().isMoreTextDisabled())
+			Log.e("STUFF", "more doesn't fit"); // TODO sort this outW
+		else {
+			
+			data.setHelpUsed(wordBlockNumber);
+			helpListener.helpUsed();
+			Spanned newInput = getNewWord().getWithNextBlock();
+			setWriterText(newInput);
+		
+		}
 		
 	}
+	
+	/*
+	 * 
+	 * EditText's listener. Disables clicking between
+	 * current input letters.
+	 * 
+	 */
+	
+	private OnTouchListener writerTouchListener = new OnTouchListener() {
+
+		@Override
+		public boolean onTouch(View view, MotionEvent event) {
+			
+			Handler handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				
+				@Override
+				public void run() {
+					
+					writer.setSelection(writer.getText().length());
+					
+				}
+				
+			}, 50);
+			
+			return false;
+		}	
+		
+	};
 
 }

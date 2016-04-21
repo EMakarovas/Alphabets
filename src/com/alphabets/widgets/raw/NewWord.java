@@ -16,9 +16,10 @@ public class NewWord {
 	private List<Boolean[]> dataList;
 	private String[] userInput;
 	private boolean wordCompleted;
+	private boolean disableMoreText;
 	
 	public NewWord(String unformattedWord) {
-				
+						
 		int blockAmount = 0;
 		int scanner = 0;
 		
@@ -76,6 +77,10 @@ public class NewWord {
 	
 	public boolean isCompleted() {
 		return wordCompleted;
+	}
+	
+	public boolean isMoreTextDisabled() {
+		return disableMoreText;
 	}
 	
 	public void compareInputToWord(String input) {
@@ -175,14 +180,26 @@ public class NewWord {
 		// Set word as completed
 		boolean completed = true;
 		for(int i=0; i<blockCompleted.length; i++)
-			if(!blockCompleted[i]) {
+			if(!blockCompleted[i] || !correct[i]) {
 				
 				completed = false;
 				break;
 				
 			}
+		
+		// Disable writing more text
+		// (Word is full but incorrect - only deleting allowed)
+		boolean disableText = true;
+		for(int i=0; i<blockCompleted.length; i++)
+			if(!blockCompleted[i]) {
+				
+				disableText = false;
+				break;
+				
+			}
 			
 		wordCompleted = completed;
+		disableMoreText = disableText;
 		
 	}
 	
@@ -273,15 +290,76 @@ public class NewWord {
 	}
 		
 	private Spanned colorNotCompleted(String block) {
-		return (Spanned) Html.fromHtml("<font color=\"#A4A4A4\">" + block + "</font>");
+		return (Spanned) Html.fromHtml("<font color=\"#848484\">" + block + "</font>");
 	}
 	
 	private Spanned colorCorrect(String block) {
-		return (Spanned) Html.fromHtml("<font color=\"#00FF00\">" + block + "</font>");
+		return (Spanned) Html.fromHtml("<font color=\"#04B431\">" + block + "</font>");
 	}
 	
 	private Spanned colorWrong(String block) {
-		return (Spanned) Html.fromHtml("<font color=\"#FA5858\">" + block + "</font>");
+		return (Spanned) Html.fromHtml("<font color=\"#FE2E2E\">" + block + "</font>");
+	}
+	
+	/*
+	 * 
+	 * Mistakes
+	 * 
+	 */
+
+	private int previousCompletedBlocks;
+	private int previousCorrectBlocks;
+	
+	public boolean mistakeWasCommitted() {
+		
+		int completedBlocks = blockCompleted.length;
+		for(int i=0; i<blockCompleted.length; i++)
+			if(!blockCompleted[i]) {
+				completedBlocks = i;
+				break;
+			}
+		
+		int correctBlocks = 0;
+		for(int i=0; i<correct.length; i++)
+			if(correct[i]) 
+				correctBlocks++;
+				
+		if(previousCompletedBlocks==completedBlocks) {
+			
+			previousCompletedBlocks = completedBlocks;
+			previousCorrectBlocks = correctBlocks;
+			return false;
+			
+		}
+
+		
+		if(completedBlocks==previousCompletedBlocks+1) {
+			
+			if(correctBlocks==previousCorrectBlocks+1) {
+				
+				previousCompletedBlocks = completedBlocks;
+				previousCorrectBlocks = correctBlocks;
+				return false;
+				
+			}
+			
+			previousCompletedBlocks = completedBlocks;
+			previousCorrectBlocks = correctBlocks;
+			return true;
+			
+		}
+		
+		if(completedBlocks==previousCompletedBlocks-1) {
+			
+			previousCompletedBlocks = completedBlocks;
+			previousCorrectBlocks = correctBlocks;
+			return false;
+			
+		}
+		
+		// will never reach this
+		return false;
+		
 	}
 
 }

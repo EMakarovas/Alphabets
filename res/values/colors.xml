@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <color name="background">#FFA8DCE9</color>
+    <color name="background">#FFA9E2F3</color>
     <color name="black">#FF000000</color>
+    <color name="not_completed">#A4A4A4</color>
+    <color name="correct">#01DF01</color>
+    <color name="wrong">#FE2E2E</color>
     
 </resources>

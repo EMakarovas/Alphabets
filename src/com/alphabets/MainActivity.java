@@ -9,12 +9,15 @@ import com.alphabets.functional.QuitDialog;
 import com.alphabets.progress.ProgressData;
 import com.alphabets.view.BlockLayout;
 import com.alphabets.view.CustomProgressBar;
+import com.alphabets.view.HelpCounter;
+import com.alphabets.view.MistakeCounter;
 import com.alphabets.widgets.BlockCompletedListener;
 import com.alphabets.widgets.raw.VisualBlock;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -24,13 +27,8 @@ import android.widget.ScrollView;
 @SuppressLint("ClickableViewAccessibility")
 public class MainActivity extends Activity implements DataReadyListener, BlockCompletedListener {
 	
-	/*
-	 * TODO if switched on for first time sometimes sets block1 as active
-	 */
-	
 	// layouts
 	private BlockLayout main;
-	private RelativeLayout bottom;
 	
 	// current item data
 	private int currentBlock; // number of current item
@@ -40,6 +38,8 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	// items
 	private ScrollView scroll;
 	private CustomProgressBar progBar;
+	private HelpCounter helpCounter;
+	private MistakeCounter mistakeCounter;
 	
 	// progress
 	private ProgressData data;
@@ -53,6 +53,8 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 		scroll = (ScrollView) findViewById(R.id.scroll);
 		main = (BlockLayout) findViewById(R.id.main);
 		progBar = (CustomProgressBar) findViewById(R.id.progress_bar);
+		helpCounter = (HelpCounter) findViewById(R.id.help_counter);
+		mistakeCounter = (MistakeCounter) findViewById(R.id.mistake_counter);
 		
 		// initialize keyboard functionality
 		Keyboard.initialize(this);
@@ -74,7 +76,7 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 		 *  otherwise widgets stick to the bottom
 		 *  
 		 */
-		bottom = (RelativeLayout) findViewById(R.id.bottom_of_screen);
+		RelativeLayout bottom = (RelativeLayout) findViewById(R.id.bottom_of_screen);
 		main.removeView(bottom);
 		main.addView(bottom);
 		
@@ -93,18 +95,18 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 		// scroll down to the new focused block
 		final int amountToScroll = -getBlockHeight();
 		amountScrolled = 0;
-		
+				
 		// disable actions, so the user doesn't mess up
 		// the auto scroll
 		main.setOnTouchListener(disableActions);
-				
+						
 		Thread th = new Thread(new Runnable() {
-			
+					
 			@Override
 			public void run() {
-				
+						
 				int delay = loading? 0 : 3;
-				
+						
 				while(amountScrolled>amountToScroll) {
 
 					scroll.scrollBy(0, -1);
@@ -114,9 +116,9 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					
+							
 					if(amountScrolled==amountToScroll) {
-						
+								
 						main.setOnTouchListener(enableActions);
 						runOnUiThread(new Runnable() {
 							@Override
@@ -126,11 +128,11 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 						});					
 						
 					}
-					
+							
 				}
-				
+						
 			}
-			
+					
 		});
 		th.start();
 		
@@ -146,7 +148,16 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	public void onBlockCompleted() {
 		
 		currentBlock++;
-		setFocusedBlock();
+		
+		Handler handler = new Handler();
+		handler.postDelayed(new Runnable() {
+			
+			@Override
+			public void run() {
+				setFocusedBlock();
+			}
+			
+		}, 300);
 		
 	}
 	
@@ -286,12 +297,20 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 	
 	/*
 	 * 
-	 * Getter method for progress bar
+	 * Getter methods for items
 	 * 
 	 */
 	
 	public CustomProgressBar getProgressBar() {
 		return progBar;
+	}
+	
+	public HelpCounter getHelpCounter() {
+		return helpCounter;
+	}
+	
+	public MistakeCounter getMistakeCounter() {
+		return mistakeCounter;
 	}
 	
 }

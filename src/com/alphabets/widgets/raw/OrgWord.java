@@ -119,15 +119,15 @@ public class OrgWord {
 	}
 	
 	private Spanned colorNotCompleted(String block) {
-		return (Spanned) Html.fromHtml("<font color=\"#A4A4A4\">" + block + "</font>");
+		return (Spanned) Html.fromHtml("<font color=\"#848484\">" + block + "</font>");
 	}
 	
 	private Spanned colorCorrect(String block) {
-		return (Spanned) Html.fromHtml("<font color=\"#00FF00\">" + block + "</font>");
+		return (Spanned) Html.fromHtml("<font color=\"#04B431\">" + block + "</font>");
 	}
 	
 	private Spanned colorWrong(String block) {
-		return (Spanned) Html.fromHtml("<font color=\"#FA5858\">" + block + "</font>");
+		return (Spanned) Html.fromHtml("<font color=\"#FE2E2E\">" + block + "</font>");
 	}
 
 }

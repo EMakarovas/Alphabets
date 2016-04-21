@@ -32,7 +32,7 @@ public class StartActivity extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		
-		if(true) {
+		if(false) {
 			
 			this.goToMainActivity();
 			
