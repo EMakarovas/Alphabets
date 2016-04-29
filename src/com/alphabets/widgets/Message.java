@@ -31,7 +31,8 @@ public class Message extends VisualBlock {
 		tv.setText(message);
 		this.setOnTouchListener(touchListener);
 		
-		performAnimation(0, 0, ScaleType.SHRINK);
+		if(!isCompleted())
+			performAnimation(0, 0, ScaleType.SHRINK);
 		
 	}
 	
@@ -64,19 +65,9 @@ public class Message extends VisualBlock {
 	@Override
 	public void completeBlock() {
 		
-		performAnimation(1000, 500, ScaleType.SHRINK);
 		setCompleted(true);
 		setIsCurrent(false);
-		
-		Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
-			
-			@Override
-			public void run() {
-				listener.onBlockCompleted();
-			}
-			
-		}, 1500);
+		listener.onBlockCompleted();
 		
 	}
 	

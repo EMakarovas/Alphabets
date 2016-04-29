@@ -189,6 +189,9 @@ public class WordBlock extends WordGroup {
 		if(new ProgressData(this.getContext()).refreshHelpCount(wordBlockNumber))
 			helpListener.helpRefreshed();
 	
+		setIsCurrent(true);
+		writer.setFocusableInTouchMode(true);
+		writer.requestFocus();
 		performAnimation(1000, 500);		
 		
 	}
@@ -217,14 +220,6 @@ public class WordBlock extends WordGroup {
 							public void run() {
 								
 								mainWord.setTranslationY(-writer.getHeight());
-								
-								if(duration!=0 && offset!=0) { // for when loading
-									
-									setIsCurrent(true);
-									writer.setFocusableInTouchMode(true);
-									writer.requestFocus();
-								
-								}
 
 							}
 							

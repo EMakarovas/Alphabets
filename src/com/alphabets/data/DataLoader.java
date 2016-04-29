@@ -73,7 +73,7 @@ public class DataLoader extends AsyncTask<Integer, Object, Object> {
 		while(goingUp<positionMap.size() || goingDown>=0) {
 			
 			try {
-				TimeUnit.MILLISECONDS.sleep(5);
+				TimeUnit.MILLISECONDS.sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				//ignore

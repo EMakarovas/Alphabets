@@ -199,8 +199,8 @@ public class MainActivity extends Activity implements DataReadyListener, BlockCo
 		return main.getChildAt(1).getHeight();
 	}
 	
-	private int getCurrentBlock() {
-		return main.getChildCount() - currentBlock - 2;
+	private int getCurrentBlock() {		
+		return main.getChildCount() - (currentBlock - lowestBlockPosition) - 2;	
 	}
 	
 	/*
