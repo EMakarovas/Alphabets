@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/FocusedBlock"
-    android:orientation="vertical"
-    android:background="@drawable/border" >
+    android:orientation="vertical" >
     
     <com.alphabets.view.CustomTextView
         android:id="@+id/message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
+        android:textSize="@dimen/comment_font_size"
         android:gravity="center" />    
 
 </LinearLayout>

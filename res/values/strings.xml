@@ -12,5 +12,6 @@
     <string name="progress">Progress: </string>
     <string name="help">Help: </string>
     <string name="mistakes">Mistakes: </string>
+    <string name="font_size">14dp</string>
 
 </resources>

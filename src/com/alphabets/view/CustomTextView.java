@@ -38,8 +38,8 @@ public class CustomTextView extends TextView {
 		Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "OpenSans-Regular.ttf");
 		setTypeface(tf);
 		if(Build.VERSION.SDK_INT<Build.VERSION_CODES.M)
-			setTextColor(getResources().getColor(R.color.black));
-		else ContextCompat.getColor(getContext(), R.color.black);
+			setTextColor(getResources().getColor(R.color.white));
+		else ContextCompat.getColor(getContext(), R.color.white);
 		
 	}
 

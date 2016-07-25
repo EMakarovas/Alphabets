@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <color name="background">#FFA9E2F3</color>
+    <color name="dark_background">#FF2D263A</color>
+    <color name="center_background">#242449</color>
+    <color name="side_background">#41426E</color>
     <color name="black">#FF000000</color>
-    <color name="not_completed">#A4A4A4</color>
-    <color name="correct">#01DF01</color>
-    <color name="wrong">#FE2E2E</color>
+    <color name="white">#FFFFFF</color>
+    <color name="not_completed">#FFFFFF</color>
+    <color name="correct">#22B573</color>
+    <color name="wrong">#C1272D</color>
     
 </resources>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE xml>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/FocusedBlock"
     android:orientation="vertical"
     android:clipChildren="false"
-    android:clipToPadding="false"
-    android:background="@drawable/border" >
+    android:clipToPadding="false" >
     
     <com.alphabets.view.CustomTextView
         android:id="@+id/translation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/font_size"
         android:gravity="center" />  
     
     <FrameLayout 
@@ -22,8 +22,9 @@
       
 	    <EditText
 	        android:id="@+id/write"
-	        android:layout_width="200dp"
-	        android:layout_height="50dp"
+	        android:layout_width="@dimen/edit_text_width"
+	        android:layout_height="@dimen/edit_text_height"
+	        android:textSize="@dimen/font_size"
 	        android:layout_gravity="center"
 	        android:gravity="center"
 	        android:inputType="text"
@@ -33,7 +34,7 @@
 	        android:id="@+id/main_word"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:textSize="25sp"
+	        android:textSize="@dimen/font_size"
 	        android:layout_gravity="center" />
         
     </FrameLayout>

@@ -3,6 +3,8 @@ package com.alphabets.widgets.raw;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
+import android.os.Build;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -102,7 +104,7 @@ public class NewWord {
 				String correctBlock = blocks[blockCounter][i];
 				
 				// check if any correct blocks are equal to current
-				if(currentBlock.equals(correctBlock)) {
+				if(currentBlock.equalsIgnoreCase(correctBlock)) {
 					
 					blockCompleted[blockCounter] = true;
 					correct[blockCounter] = true;
@@ -289,16 +291,28 @@ public class NewWord {
 		
 	}
 		
+	@SuppressLint({ "InlinedApi", "NewApi" })
+	@SuppressWarnings("deprecation")
 	private Spanned colorNotCompleted(String block) {
-		return (Spanned) Html.fromHtml("<font color=\"#848484\">" + block + "</font>");
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N)
+			return (Spanned) Html.fromHtml("<font color=\"#FFFFFF\">" + block + "</font>", Html.FROM_HTML_MODE_LEGACY, null, null);
+		return (Spanned) Html.fromHtml("<font color=\"#FFFFFF\">" + block + "</font>");
 	}
 	
+	@SuppressLint({ "InlinedApi", "NewApi" })
+	@SuppressWarnings("deprecation")
 	private Spanned colorCorrect(String block) {
-		return (Spanned) Html.fromHtml("<font color=\"#04B431\">" + block + "</font>");
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N)
+			return (Spanned) Html.fromHtml("<font color=\"#22B573\">" + block + "</font>", Html.FROM_HTML_MODE_LEGACY, null, null);
+		return (Spanned) Html.fromHtml("<font color=\"#22B573\">" + block + "</font>");
 	}
 	
+	@SuppressLint({ "InlinedApi", "NewApi" })
+	@SuppressWarnings("deprecation")
 	private Spanned colorWrong(String block) {
-		return (Spanned) Html.fromHtml("<font color=\"#FE2E2E\">" + block + "</font>");
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N)
+			return (Spanned) Html.fromHtml("<font color=\"#C1272D\">" + block + "</font>", Html.FROM_HTML_MODE_LEGACY, null, null);
+		return (Spanned) Html.fromHtml("<font color=\"#C1272D\">" + block + "</font>");
 	}
 	
 	/*
