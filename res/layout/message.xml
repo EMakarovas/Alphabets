@@ -3,11 +3,15 @@
     style="@style/FocusedBlock"
     android:orientation="vertical" >
     
-    <com.alphabets.view.CustomTextView
+    <com.alphabetlift.view.CustomTextView
         android:id="@+id/message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/comment_font_size"
-        android:gravity="center" />    
+        android:gravity="center"
+        android:paddingLeft="@dimen/message_horizontal_padding"
+        android:paddingRight="@dimen/message_horizontal_padding"
+        android:paddingTop="@dimen/message_vertical_padding"
+        android:paddingBottom="@dimen/message_vertical_padding" />    
 
 </LinearLayout>

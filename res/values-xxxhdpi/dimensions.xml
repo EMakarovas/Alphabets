@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="font_size">96dp</dimen>
+    <dimen name="comment_font_size">40dp</dimen>
+    <dimen name="top_text_font_size">20dp</dimen>
+    <dimen name="mistake_font_size">54dp</dimen>
+    <dimen name="edit_text_height">134dp</dimen>
+    <dimen name="edit_text_width">748dp</dimen>
+    <dimen name="block_height">400dp</dimen>
+    <dimen name="empty_block_height">800dp</dimen>
+    
+    <dimen name="message_horizontal_padding">86dp</dimen>
+    <dimen name="message_vertical_padding">8dp</dimen>
+    <dimen name="word_margin_top">140dp</dimen>
+    <dimen name="dude_padding">28dp</dimen>
+    <dimen name="bubble_view_padding">12dp</dimen>
+    <dimen name="dude_button_size">220dp</dimen>
+    <dimen name="top_section_height">268dp</dimen>
+    <dimen name="top_side_height">108dp</dimen>
+    <dimen name="top_side_margin_top">140dp</dimen>
+    <dimen name="top_side_width">220dp</dimen>
+    <dimen name="top_side_margin_side">12dp</dimen>
+    <dimen name="clock_width">536dp</dimen>
+    <dimen name="clock_height">220dp</dimen>
+    <dimen name="clock_margin_top">28dp</dimen>
+    <dimen name="door_border">4dp</dimen>
+
+</resources>

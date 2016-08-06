@@ -6,7 +6,7 @@
     android:clipChildren="false"
     android:clipToPadding="false" >
     
-    <com.alphabets.view.CustomTextView
+    <com.alphabetlift.view.CustomTextView
         android:id="@+id/translation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:layout_marginTop="50dp" >
+        android:layout_marginTop="@dimen/word_margin_top" >
       
 	    <EditText
 	        android:id="@+id/write"
@@ -30,7 +30,7 @@
 	        android:inputType="text"
 	        android:background="@drawable/editor_style" />  
 	        
-	    <com.alphabets.view.CustomTextView
+	    <com.alphabetlift.view.CustomTextView
 	        android:id="@+id/main_word"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
